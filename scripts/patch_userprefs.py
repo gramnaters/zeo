@@ -9,6 +9,12 @@ We preserve the ORIGINAL method signature/descriptor and only swap the
 body so every existing call site keeps resolving, then return our
 injected values from CookieSeeder static fields.
 
+We read the static fields directly via ``sget-object`` (a field reference)
+instead of calling ``CookieSeeder.get*()`` (a method reference) because the
+newer JioHotstar builds fill each dex's method_ids table to Android's 64K
+limit — adding method references overflows the dex at recompile time.
+Field ids have far more headroom.
+
 Usage: python3 patch_userprefs.py <decompiled_dir>
 """
 import re
@@ -16,7 +22,7 @@ import sys
 from pathlib import Path
 
 
-def patch_method(content: str, method_name: str, getter: str) -> str:
+def patch_method(content: str, method_name: str, field: str) -> str:
     """Replace a suspend getter's body, keeping its original descriptor."""
     pattern = re.compile(
         r"(\.method [^\n]*"
@@ -53,9 +59,8 @@ def patch_method(content: str, method_name: str, getter: str) -> str:
     .annotation build Lorg/jetbrains/annotations/Nullable;
     .end annotation
 
-    # PATCH: return injected value from CookieSeeder
-    invoke-static {{}}, Lcom/hotstar/patch/CookieSeeder;->{getter}()Ljava/lang/String;
-    move-result-object v0
+    # PATCH: return injected value from CookieSeeder static field
+    sget-object v0, Lcom/hotstar/patch/CookieSeeder;->{field}:Ljava/lang/String;
     return-object v0
 .end method"""
     return content[: match.start()] + new_body + content[match.end() :]
@@ -85,17 +90,18 @@ def main():
         print("  Already patched — skipping")
         return
 
-    patch_map = {
-        "getUserTokenValue": "getInjectedUserToken",
-        "getMediaTokenValue": "getInjectedMediaToken",
-        "getHidValue": "getInjectedHid",
-        "getPidValue": "getInjectedPid",
+    # Map each auth getter to the CookieSeeder static field it should return.
+    field_map = {
+        "getUserTokenValue": "injectedUserToken",
+        "getMediaTokenValue": "injectedUserUP",
+        "getHidValue": "injectedHid",
+        "getPidValue": "injectedPid",
     }
-    for method, getter in patch_map.items():
+    for method, field in field_map.items():
         before = content
-        content = patch_method(content, method, getter)
+        content = patch_method(content, method, field)
         if content != before:
-            print(f"  Patched {method}")
+            print(f"  Patched {method} -> {field}")
 
     up_path.write_text(content, encoding="utf-8")
 

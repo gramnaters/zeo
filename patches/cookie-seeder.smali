@@ -10,11 +10,13 @@
 # - Patched UserPreferences methods return the static values
 #
 # FIELDS: injected credentials
-.field private static injectedUserToken:Ljava/lang/String;
-.field private static injectedUserUP:Ljava/lang/String;
-.field private static injectedHid:Ljava/lang/String;
-.field private static injectedPid:Ljava/lang/String;
-.field private static injectedDeviceId:Ljava/lang/String;
+# (public so UserPreferences can read them directly via sget-object without
+#  adding method references — method_ids are at the 64K limit on new builds)
+.field public static injectedUserToken:Ljava/lang/String;
+.field public static injectedUserUP:Ljava/lang/String;
+.field public static injectedHid:Ljava/lang/String;
+.field public static injectedPid:Ljava/lang/String;
+.field public static injectedDeviceId:Ljava/lang/String;
 
 # Static getters
 .method public static getInjectedUserToken()Ljava/lang/String;
