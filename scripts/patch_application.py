@@ -20,41 +20,45 @@ import sys
 CLASS_NAME = "com.hotstar.patch.CookieSeeder"
 METHOD_NAME = "seedIfNeeded"
 
+# NOTE: v1 is left untouched — the original onCreate() uses v1 as a boolean
+# (const/4 v1, 0x1 ... iput-boolean v1) *after* the injection point, and
+# clobbering it trips the dex verifier. We use v0,v2..v7 instead (all of
+# which the original code reassigns right after this block).
 REFLECT_BLOCK = """    const-string v0, "com.hotstar.patch.CookieSeeder"
 
     invoke-static {v0}, Ljava/lang/Class;->forName(Ljava/lang/String;)Ljava/lang/Class;
 
-    move-result-object v0
+    move-result-object v2
 
-    const-string v1, "seedIfNeeded"
+    const-string v3, "seedIfNeeded"
 
-    const/4 v2, 0x1
+    const/4 v4, 0x1
 
-    new-array v2, v2, [Ljava/lang/Class;
+    new-array v5, v4, [Ljava/lang/Class;
 
-    const-class v3, Landroid/content/Context;
+    const-class v6, Landroid/content/Context;
 
-    const/4 v4, 0x0
+    const/4 v7, 0x0
 
-    aput-object v3, v2, v4
+    aput-object v6, v5, v7
 
-    invoke-virtual {v0, v1, v2}, Ljava/lang/Class;->getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+    invoke-virtual {v2, v3, v5}, Ljava/lang/Class;->getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 
-    move-result-object v0
+    move-result-object v2
 
-    const/4 v1, 0x1
+    const/4 v3, 0x1
 
-    new-array v1, v1, [Ljava/lang/Object;
+    new-array v4, v3, [Ljava/lang/Object;
 
-    const/4 v2, 0x0
+    const/4 v5, 0x0
 
-    aput-object p0, v1, v2
+    aput-object p0, v4, v5
 
-    const/4 v2, 0x0
+    const/4 v6, 0x0
 
-    invoke-virtual {v0, v2, v1}, Ljava/lang/reflect/Method;->invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+    invoke-virtual {v2, v6, v4}, Ljava/lang/reflect/Method;->invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-result-object v0
+    move-result-object v2
 """
 
 # Reflection block uses locals v0..v4 -> 5 registers minimum.
