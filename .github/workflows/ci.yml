@@ -27,7 +27,7 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Check for new JioHotstar version
+      - name: Check for new Zeo version
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,7 @@ jobs:
                   if not r.get('tag_name', '').startswith('tv'):
                       body = r.get('body', '') or ''
                       break
-              m = re.search(r'JioHotstar version[^0-9]*([\d.]+)', body)
+              m = re.search(r'Zeo version[^0-9]*([\d.]+)', body)
               print(m.group(1) if m else 'none')
           except Exception:
               print('none')

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Patch UserPreferences.smali to inject cookies for JioHotstar.
+Patch UserPreferences.smali to inject cookies for Zeo.
 
-The JioHotstar auth getters are Kotlin suspend functions whose real
+The Zeo auth getters are Kotlin suspend functions whose real
 descriptor carries an obfuscated continuation type, e.g.
   .method public final getUserTokenValue(LAu/a;)Ljava/lang/Object;
 We preserve the ORIGINAL method signature/descriptor and only swap the
@@ -11,7 +11,7 @@ injected values from CookieSeeder static fields.
 
 We read the static fields directly via ``sget-object`` (a field reference)
 instead of calling ``CookieSeeder.get*()`` (a method reference) because the
-newer JioHotstar builds fill each dex's method_ids table to Android's 64K
+newer Zeo builds fill each dex's method_ids table to Android's 64K
 limit — adding method references overflows the dex at recompile time.
 Field ids have far more headroom.
 

@@ -1,7 +1,7 @@
 .class public Lcom/hotstar/patch/CookieSeeder;
 .super Ljava/lang/Object;
 
-# JioHotstar Auth Injection v5.0 — with self-refresh
+# Zeo Auth Injection v5.0 — with self-refresh
 #
 # ARCHITECTURE:
 # - CookieSeeder reads sessionUserUP, userUP, device creds from assets/cookies/
@@ -229,7 +229,7 @@
     return-void
 
     :do_seed
-    const-string v2, "Seeding auth tokens for JioHotstar..."
+    const-string v2, "Seeding auth tokens for Zeo..."
     invoke-static {v0, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
 
     # === Read sessionUserUP ===

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Check the latest JioHotstar version available on APKPure.
+Check the latest Zeo version available on APKPure.
 
 Uses APKPure's official app API (tapi.pureapk.com), which returns direct
 version info and download links WITHOUT any Cloudflare bypass. This replaces

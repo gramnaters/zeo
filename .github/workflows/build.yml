@@ -115,12 +115,12 @@ jobs:
         run: |
           VNAME=$(cat version.txt 2>/dev/null || echo "unknown")
           echo "version_name=$VNAME" >> "$GITHUB_OUTPUT"
-          echo "Downloaded JioHotstar version: $VNAME"
+          echo "Downloaded Zeo version: $VNAME"
 
       - name: Decompile APK
         id: decompile
         run: |
-          apktool d jiohotstar.apk -o decompiled -f 2>&1
+          apktool d zeo.apk -o decompiled -f 2>&1
           if [ ! -f decompiled/AndroidManifest.xml ]; then
             echo "::error::Decompile failed"
             exit 1
@@ -169,13 +169,13 @@ jobs:
       - name: Recompile APK
         run: |
           set +e
-          apktool b decompiled -o jiohotstar_unsigned.apk 2>&1 | tail -10
+          apktool b decompiled -o zeo_unsigned.apk 2>&1 | tail -10
           set -e
-          if [ ! -f jiohotstar_unsigned.apk ]; then
+          if [ ! -f zeo_unsigned.apk ]; then
             echo "::error::Recompile failed"
             exit 1
           fi
-          echo "Recompiled: $(ls -la jiohotstar_unsigned.apk | awk '{print $5}') bytes"
+          echo "Recompiled: $(ls -la zeo_unsigned.apk | awk '{print $5}') bytes"
 
       - name: Restore original resources (fix Resources$NotFoundException)
         run: |
@@ -186,13 +186,13 @@ jobs:
           echo "Replacing recompiled resources with originals..."
           # Extract original resources from the downloaded APK
           mkdir -p orig_res
-          unzip -o jiohotstar.apk "resources.arsc" "res/*" -d orig_res 2>/dev/null
+          unzip -o zeo.apk "resources.arsc" "res/*" -d orig_res 2>/dev/null
           # Remove recompiled resources from the unsigned APK
-          zip -d jiohotstar_unsigned.apk "resources.arsc" "res/*" 2>/dev/null || true
+          zip -d zeo_unsigned.apk "resources.arsc" "res/*" 2>/dev/null || true
           # Add original resources back (stored, not compressed — matching original)
-          (cd orig_res && zip -0 -r ../jiohotstar_unsigned.apk resources.arsc res/ 2>/dev/null)
+          (cd orig_res && zip -0 -r ../zeo_unsigned.apk resources.arsc res/ 2>/dev/null)
           rm -rf orig_res
-          echo "Resources restored: $(unzip -l jiohotstar_unsigned.apk | grep -c 'res/') res entries"
+          echo "Resources restored: $(unzip -l zeo_unsigned.apk | grep -c 'res/') res entries"
 
       - name: Inject native libs & sign APK (always signed)
         env:
@@ -203,44 +203,44 @@ jobs:
           export PATH="${BUILD_TOOLS}:${PATH}"
 
           # 1) Ensure lib/ native libs are present in the recompiled APK
-          cp jiohotstar_unsigned.apk jiohotstar_mod.apk
-          LIB_COUNT=$(unzip -l jiohotstar_mod.apk 2>/dev/null | grep -c "lib/.*\.so" || true)
+          cp zeo_unsigned.apk zeo_mod.apk
+          LIB_COUNT=$(unzip -l zeo_mod.apk 2>/dev/null | grep -c "lib/.*\.so" || true)
           echo "Native libs in recompiled APK: $LIB_COUNT"
           if [ "$LIB_COUNT" -eq 0 ]; then
             LIB_SRC=""
             if [ -f arm64_split.apk ] && [ "$(stat -c%s arm64_split.apk 2>/dev/null || echo 0)" -gt 1000000 ]; then
               LIB_SRC="arm64_split.apk"
             else
-              LIB_SRC="jiohotstar.apk"
+              LIB_SRC="zeo.apk"
             fi
             echo "Injecting lib/* from $LIB_SRC"
             mkdir -p lib_tmp && unzip -o "$LIB_SRC" "lib/*" -d lib_tmp 2>/dev/null || true
             if find lib_tmp -name "*.so" 2>/dev/null | grep -q .; then
-              zip -d jiohotstar_mod.apk "META-INF/*" 2>/dev/null || true
-              (cd lib_tmp && zip -r ../jiohotstar_mod.apk lib/ 2>/dev/null)
-              zip -d jiohotstar_mod.apk "META-INF/*" 2>/dev/null || true
+              zip -d zeo_mod.apk "META-INF/*" 2>/dev/null || true
+              (cd lib_tmp && zip -r ../zeo_mod.apk lib/ 2>/dev/null)
+              zip -d zeo_mod.apk "META-INF/*" 2>/dev/null || true
             else
               echo "::warning::No lib/*.so found in $LIB_SRC — keeping APK as-is"
             fi
             rm -rf lib_tmp
           fi
-          echo "Post-inject lib count: $(unzip -l jiohotstar_mod.apk 2>/dev/null | grep -c 'lib/.*\.so' || true)"
+          echo "Post-inject lib count: $(unzip -l zeo_mod.apk 2>/dev/null | grep -c 'lib/.*\.so' || true)"
 
           # 2) Always sign with the stable committed keystore
-          zipalign -f 4 jiohotstar_mod.apk jiohotstar_aligned.apk
-          apksigner sign --ks signing/hotstar.keystore --ks-pass pass:hotstarpatch --ks-key-alias hotstar --key-pass pass:hotstarpatch --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out jiohotstar_patched.apk jiohotstar_aligned.apk
-          rm -f jiohotstar_aligned.apk jiohotstar_mod.apk
+          zipalign -f 4 zeo_mod.apk zeo_aligned.apk
+          apksigner sign --ks signing/hotstar.keystore --ks-pass pass:hotstarpatch --ks-key-alias hotstar --key-pass pass:hotstarpatch --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out zeo_patched.apk zeo_aligned.apk
+          rm -f zeo_aligned.apk zeo_mod.apk
 
           # 3) Verify — fail the build if the APK is not properly signed
-          apksigner verify --verbose --print-certs jiohotstar_patched.apk
+          apksigner verify --verbose --print-certs zeo_patched.apk
           echo "APK_SIGNED=1" >> "$GITHUB_ENV"
 
       - name: Rename final APK
         run: |
           VNAME="${{ steps.apk_ver.outputs.version_name }}"
-          FINAL_NAME="JioHotstar-Premium-v${VNAME}-arm64.apk"
+          FINAL_NAME="Zeo-v${VNAME}-arm64.apk"
           mkdir -p build
-          cp jiohotstar_patched.apk "build/$FINAL_NAME"
+          cp zeo_patched.apk "build/$FINAL_NAME"
           echo "FINAL_NAME=$FINAL_NAME" >> "$GITHUB_ENV"
           echo "Final APK: $FINAL_NAME ($(du -h "build/$FINAL_NAME" | cut -f1))"
 

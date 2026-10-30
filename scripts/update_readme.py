@@ -46,7 +46,7 @@ def main() -> int:
     new_block = f"""<!-- LATEST_BUILD_START -->
 | Build | Version | APK |
 |-------|---------|-----|
-| `{next_ver_code}` | `{apk_version}` | [Download]({server}/{repo}/releases/download/{next_ver_code}/JioHotstar-Premium-v{apk_version}-arm64.apk) |
+| `{next_ver_code}` | `{apk_version}` | [Download]({server}/{repo}/releases/download/{next_ver_code}/Zeo-v{apk_version}-arm64.apk) |
 <!-- LATEST_BUILD_END -->"""
 
     new_content = pattern.sub(new_block, content)

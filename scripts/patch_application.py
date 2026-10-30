@@ -2,7 +2,7 @@
 """Patch the Application class to call CookieSeeder via reflection.
 
 Replacing a direct ``invoke-static CookieSeeder.seedIfNeeded`` with reflection
-because newer JioHotstar builds push classes.dex to Android's 64K method-index
+because newer Zeo builds push classes.dex to Android's 64K method-index
 limit. A direct call adds one more method_id and overflows it:
 
     Unsigned short value out of range: 65536

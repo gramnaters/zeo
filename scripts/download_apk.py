@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-JioHotstar APK downloader — APKPure API (no Cloudflare bypass needed).
+Zeo APK downloader — APKPure API (no Cloudflare bypass needed).
 
 APKMirror now blocks GitHub runner (datacenter) IPs at the redirect stage even
 after a successful Cloudflare challenge, which broke the old trawl/cfbs
@@ -13,7 +13,7 @@ APK with APKEditor (which fuses the split resources.arsc tables and native
 libs — the same merge the old APKMirror path used).
 
 Output:
-  jiohotstar.apk  — merged arm64 APK
+  zeo.apk  — merged arm64 APK
   version.txt     — version name (e.g. 26.10.12.2)
 """
 from __future__ import annotations
@@ -27,7 +27,7 @@ import urllib.request
 import zipfile
 
 PACKAGE_NAME = os.environ.get("PACKAGE_NAME", "in.startv.hotstar")
-OUTPUT_APK = os.environ.get("OUTPUT", "jiohotstar.apk")
+OUTPUT_APK = os.environ.get("OUTPUT", "zeo.apk")
 TARGET_ARCH = os.environ.get("ARCH", "arm64-v8a").lower()
 if TARGET_ARCH == "arm-v7a":
     TARGET_ARCH = "armeabi-v7a"
@@ -140,7 +140,7 @@ def merge_via_apkeditor(xapk_path: str) -> None:
 
 
 def main() -> int:
-    print("=== JioHotstar APK downloader (APKPure API) ===", flush=True)
+    print("=== Zeo APK downloader (APKPure API) ===", flush=True)
     print(f"  Package:     {PACKAGE_NAME}", flush=True)
     print(f"  Target arch: {TARGET_ARCH}", flush=True)
 

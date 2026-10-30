@@ -1,17 +1,17 @@
-# JioHotstar Premium AutoBuild
+# Zeo AutoBuild
 
 [![CI](https://github.com/gramnaters/zeo/actions/workflows/ci.yml/badge.svg)](https://github.com/gramnaters/zeo/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/gramnaters/zeo?label=release)](https://github.com/gramnaters/zeo/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/gramnaters/zeo/total)](https://github.com/gramnaters/zeo/releases)
 
-Automated JioHotstar patcher — builds a ready-to-install APK, updated every 6 hours.
+Automated Zeo patcher — builds a ready-to-install APK, updated every 6 hours.
 
 Get the [latest release](https://github.com/gramnaters/zeo/releases/latest).
 
 <!-- LATEST_BUILD_START -->
 | Build | Version | APK |
 |-------|---------|-----|
-| `260115` | `26.10.12.2` | [Download](https://github.com/gramnaters/zeo/releases/download/260115/JioHotstar-Premium-v26.10.12.2-arm64.apk) |
+| `260115` | `26.10.12.2` | [Download](https://github.com/gramnaters/zeo/releases/download/260115/Zeo-v26.10.12.2-arm64.apk) |
 <!-- LATEST_BUILD_END -->
 
 ## Install
@@ -22,7 +22,7 @@ Get the [latest release](https://github.com/gramnaters/zeo/releases/latest).
 <details>
 <summary><b>How it works</b></summary>
 
-A scheduled GitHub Action checks for new JioHotstar versions every 6 hours.
+A scheduled GitHub Action checks for new Zeo versions every 6 hours.
 When one appears, it downloads, patches, re-signs, and publishes it as a
 release automatically — no manual steps needed.
 
@@ -30,4 +30,4 @@ release automatically — no manual steps needed.
 
 ## Disclaimer
 
-Unofficial modification of JioHotstar for personal use only. Not affiliated with JioStar or Disney.
+Unofficial patched build for personal use only. Not affiliated with the original app or its owners.
