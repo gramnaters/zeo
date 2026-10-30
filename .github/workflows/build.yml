@@ -65,16 +65,23 @@ jobs:
           echo "NEXT_VER_CODE=$NEXT_VER_CODE" >> "$GITHUB_OUTPUT"
           echo "Next version code: $NEXT_VER_CODE"
 
-      - name: Validate cookie files
+      - name: Write cookies from secrets
+        env:
+          COOKIE_SESSION_USER_UP: ${{ secrets.COOKIE_SESSION_USER_UP }}
+          COOKIE_USER_UP: ${{ secrets.COOKIE_USER_UP }}
+          COOKIE_USER_HID: ${{ secrets.COOKIE_USER_HID }}
+          COOKIE_USER_PID: ${{ secrets.COOKIE_USER_PID }}
+          COOKIE_DEVICE_ID: ${{ secrets.COOKIE_DEVICE_ID }}
+          COOKIE_MEDIA_TOKEN: ${{ secrets.COOKIE_MEDIA_TOKEN }}
         run: |
-          REQUIRED=(sessionUserUP.txt userHID.txt userPID.txt deviceId.txt)
-          for f in "${REQUIRED[@]}"; do
-            if [ ! -f "cookies/$f" ]; then
-              echo "::error::Missing cookie file: $f"
-              exit 1
-            fi
-            echo "  $f: $(wc -c < cookies/$f) bytes"
-          done
+          mkdir -p cookies
+          printf '%s' "$COOKIE_SESSION_USER_UP" > cookies/sessionUserUP.txt
+          printf '%s' "$COOKIE_USER_UP" > cookies/userUP.txt
+          printf '%s' "$COOKIE_USER_HID" > cookies/userHID.txt
+          printf '%s' "$COOKIE_USER_PID" > cookies/userPID.txt
+          printf '%s' "$COOKIE_DEVICE_ID" > cookies/deviceId.txt
+          printf '%s' "$COOKIE_MEDIA_TOKEN" > cookies/media_token.txt
+          echo "Cookies written from secrets"
 
       - name: Install Playwright for cookie refresh
         run: |
@@ -197,10 +204,17 @@ jobs:
       - name: Inject native libs & sign APK (always signed)
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         run: |
           set -e
           BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/*/ 2>/dev/null | sort -V | tail -1)
           export PATH="${BUILD_TOOLS}:${PATH}"
+
+          # 0) Decode the signing keystore from the secret
+          mkdir -p signing
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 -d > signing/hotstar.keystore
 
           # 1) Ensure lib/ native libs are present in the recompiled APK
           cp zeo_unsigned.apk zeo_mod.apk
@@ -226,9 +240,9 @@ jobs:
           fi
           echo "Post-inject lib count: $(unzip -l zeo_mod.apk 2>/dev/null | grep -c 'lib/.*\.so' || true)"
 
-          # 2) Always sign with the stable committed keystore
+          # 2) Always sign with the keystore from secrets
           zipalign -f 4 zeo_mod.apk zeo_aligned.apk
-          apksigner sign --ks signing/hotstar.keystore --ks-pass pass:hotstarpatch --ks-key-alias hotstar --key-pass pass:hotstarpatch --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out zeo_patched.apk zeo_aligned.apk
+          apksigner sign --ks signing/hotstar.keystore --ks-pass "pass:$SIGNING_KEY_PASSWORD" --ks-key-alias "$SIGNING_KEY_ALIAS" --key-pass "pass:$SIGNING_KEY_PASSWORD" --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out zeo_patched.apk zeo_aligned.apk
           rm -f zeo_aligned.apk zeo_mod.apk
 
           # 3) Verify — fail the build if the APK is not properly signed

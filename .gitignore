@@ -8,3 +8,7 @@ base.apk
 .idea/
 *.iml
 local.properties
+
+# Sensitive files — stored as GitHub Secrets, never committed
+cookies/*.txt
+signing/*.keystore
