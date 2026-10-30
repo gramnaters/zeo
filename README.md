@@ -16,7 +16,7 @@ Get the [latest release](https://github.com/gramnaters/zeo/releases/latest).
 
 ## Install
 
-- **Obtainium** (auto-updates): [![Add to Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/refs/heads/main/assets/graphics/badge_obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium%3A%2F%2Fapp%2F%7B%22id%22%3A%22in.startv.hotstar%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fgramnaters%2Fzeo%22%7D)
+- **Obtainium** (auto-updates): [![Add to Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/refs/heads/main/assets/graphics/badge_obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium%3A%2F%2Faddrepo%2Fhttps%3A%2F%2Fraw.githubusercontent.com%2Fgramnaters%2Fzeo%2Fmain%2Fobtainium-config.json)
 - **Manual**: grab the APK from [Releases](https://github.com/gramnaters/zeo/releases)
 
 <details>
