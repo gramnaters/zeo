@@ -1,6 +1,12 @@
 # JioHotstar Premium AutoBuild
 
-Automated JioHotstar patcher — builds a ready-to-install APK. No root required. Updated every 6 hours.
+[![CI](https://github.com/gramnaters/patcher-build/actions/workflows/ci.yml/badge.svg)](https://github.com/gramnaters/patcher-build/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/gramnaters/patcher-build?label=release)](https://github.com/gramnaters/patcher-build/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/gramnaters/patcher-build/total)](https://github.com/gramnaters/patcher-build/releases)
+
+Automated JioHotstar patcher — builds a ready-to-install APK, updated every 6 hours.
+
+Get the [latest release](https://github.com/gramnaters/patcher-build/releases/latest).
 
 <!-- LATEST_BUILD_START -->
 | Build | Version | APK |
@@ -13,10 +19,14 @@ Automated JioHotstar patcher — builds a ready-to-install APK. No root required
 - **Obtainium** (auto-updates): [![Add to Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/refs/heads/main/assets/graphics/badge_obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium%3A%2F%2Fapp%2F%7B%22id%22%3A%22in.startv.hotstar%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fgramnaters%2Fpatcher-build%22%7D)
 - **Manual**: grab the APK from [Releases](https://github.com/gramnaters/patcher-build/releases)
 
-## How it works
+<details>
+<summary><b>How it works</b></summary>
 
-1. A scheduled workflow checks for new JioHotstar versions every 6 hours
-2. New versions are patched and published as a GitHub Release automatically
+A scheduled GitHub Action checks for new JioHotstar versions every 6 hours.
+When one appears, it downloads, patches, re-signs, and publishes it as a
+release automatically — no manual steps needed.
+
+</details>
 
 ## Disclaimer
 
