@@ -30,7 +30,7 @@ def main() -> int:
     apk_version = env("APK_VERSION", "unknown")
     final_name = env("FINAL_NAME", "JioHotstar-Premium.apk")
     arch = env("ARCH", "arm64-v8a")
-    repo = os.environ.get("GITHUB_REPOSITORY", "gramnaters/patcher-build")
+    repo = os.environ.get("GITHUB_REPOSITORY", "gramnaters/zeo")
     server = os.environ.get("GITHUB_SERVER_URL", "https://github.com")
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
