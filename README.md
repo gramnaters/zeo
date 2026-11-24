@@ -11,7 +11,7 @@ Get the [latest release](https://github.com/gramnaters/zeo/releases/latest).
 <!-- LATEST_BUILD_START -->
 | Build | Version | APK |
 |-------|---------|-----|
-| `260117` | `26.10.26.0` | [Download](https://github.com/gramnaters/zeo/releases/download/260117/Zeo-v26.10.26.0-arm64.apk) |
+| `260118` | `26.11.09.1` | [Download](https://github.com/gramnaters/zeo/releases/download/260118/Zeo-v26.11.09.1-arm64.apk) |
 <!-- LATEST_BUILD_END -->
 
 ## Install
